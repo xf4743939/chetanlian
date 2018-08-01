@@ -38,7 +38,7 @@
                  <div class="register_server">
         
                   <check-icon :value.sync="checked"></check-icon>
-                  <div class="rules"><span>同意《</span><a style="color:#4eb248;" href="/pages/terms/terms">使用条款及隐私</a><span>》</span></div>
+                  <div class="rules"><span>同意《</span><a style="color:#4eb248;" href="/terms">使用条款及隐私</a><span>》</span></div>
                 </div>        
                  <div class="btn_wrap">
                     <button  class="btn1" v-bind:disabled="disableRegisterBtn" :class="disableRegisterBtn ? 'disBtn' : 'activeCode' "  @click="login">注册</button>
@@ -94,7 +94,7 @@ export default {
             Object.assign(this.$data,this.$options.data())
         },
         isRegister(){  
-          const myreg=/^[1][3,4,5,7,8][0-9]{9}$/; 
+          const myreg=/^[1][0,3,4,5,7,8,9][0-9]{9}$/; 
         //   if(!this.register.phoneNumber || this.register.phoneNumber.length===0){ 
         //       this.$vux.toast.text('请输入手机号码', 'middle')
         //       return false;
@@ -201,7 +201,7 @@ export default {
             }        
       },
       async getCode(){
-          const myreg=/^[1][3,4,5,7,8][0-9]{9}$/;    
+          const myreg=/^[1][0,3,4,5,7,8,9][0-9]{9}$/;   
           if(!this.register.phoneNumber || this.register.phoneNumber.length===0){ 
                 this.$vux.toast.text('请输入手机号码', 'middle')        
               return false;
@@ -212,8 +212,7 @@ export default {
           }
      
          const that=this;
-       
-       
+        
         this.interval=setInterval( ()=>{
              this.currentTime--;
             if(this.currentTime>0){

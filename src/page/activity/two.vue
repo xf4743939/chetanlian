@@ -30,7 +30,7 @@ export default {
         }
     },
     computed:{
-      ...mapState(['isLogin','userInfo','type'])  
+      ...mapState(['isLogin','userInfo'])  
     },
     methods: {
         ...mapMutations(['UPDATETYPE']),

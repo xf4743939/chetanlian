@@ -18,16 +18,9 @@
                     <img src="../../../static/images/wx.png">
                     <span>微信支付</span>
                   </div>
-                  <div>
-                       <!-- <checkbox-group @change="changewx">
-                        <label class="weui-cell weui-check__label">
-                            <checkbox class="weui-check"  :checked="checked" />
-                            <div class="weui-cell__hd weui-check__hd_in-checkbox">
-                                <icon class="weui-icon-checkbox_circle" type="circle" size="23" v-if="!checked"></icon>
-                                <icon class="weui-icon-checkbox_success" type="success" size="23" v-if="checked"></icon>
-                            </div>
-                        </label>
-                      </checkbox-group> -->
+                  <div  @click="payTypes(1)">
+                    <check-icon :value.sync="checked"></check-icon>
+                   
                   </div>
                   
               </div>
@@ -36,16 +29,8 @@
                       <img src="../../../static/images/zhifubao.png">
                      <span>支付宝支付</span>
                   </div>
-                   <div>
-                        <!-- <checkbox-group @change="changezf">
-                                <label class="weui-cell weui-check__label">
-                                    <checkbox class="weui-check"  :checked="zfchecked" />
-                                    <div class="weui-cell__hd weui-check__hd_in-checkbox">
-                                        <icon class="weui-icon-checkbox_circle" type="circle" size="23" v-if="!zfchecked"></icon>
-                                        <icon class="weui-icon-checkbox_success" type="success" size="23" v-if="zfchecked"></icon>
-                                    </div>
-                                </label>
-                        </checkbox-group> -->
+                   <div @click="payTypes(2)">
+                         <check-icon :value.sync="zfchecked" ></check-icon>
                    </div>       
               </div>
           </div>
@@ -65,6 +50,9 @@
 import { mapState,mapMutations } from 'vuex'
 import detailModal from '../../components/detailModal'
 import{getStore,setStore} from '../../libs/util.js'
+import {CheckIcon} from 'vux'
+import { debug } from 'util';
+import { userInfo } from 'os';
 export default {
     data(){
         return{
@@ -76,12 +64,21 @@ export default {
         }
     },
     components: {
-        detailModal
+        detailModal,
+        CheckIcon
     },
     computed: {
-      ...mapState(['fee','carNo','schem','address','gameFeeChoiceType'])  
+      ...mapState(['fee','carNo','schem','address','gameFeeChoiceType','userInfo'])  
     },
     methods: {
+        payTypes(index){
+           
+           if(index===1){
+               this.zfchecked=this.checked ? false :true
+           }else{
+               this.checked=this.zfchecked ? false :true
+           }
+        },
           hideModal(){
             this.isShow=false;     
         },
@@ -105,14 +102,15 @@ export default {
                 const fee=getStore('fee')
              
                 if(fee){
-                  this.$store.state.fee=fee
+                   this.$store.state.fee=fee
                 }
             }
             if(!this.carNo || this.carNo.length==0){
                 const carNo=getStore('carNo')   
                 if(carNo){
-                     this.$store.state.carNo=carNo
-                  
+                     this.$store.state.carNo=carNo    
+                }else{
+                    this.$store.state.carNo=this.userInfo && this.userInfo.carNo ? this.userInfo.carNo : ''
                 }
             }
               if(!this.schem){
@@ -156,7 +154,7 @@ export default {
     },
     mounted () {
         this.initData()
-        
+       
     }
      
 }

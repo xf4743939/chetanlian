@@ -27,8 +27,7 @@ const store = new Vuex.Store({
   mutations: {  
 
     //小程序 
-     [types.GETCITY](state,city){
-     
+     [types.GETCITY](state,city){   
        state.city=city
      },
      [types.LOGINSTATUS](state,status){
@@ -63,7 +62,8 @@ const store = new Vuex.Store({
        state.isAndroid=payload.isAndroid
      },
      [types.UPDATE_LOADING_STATUS](state,payload){
-       state.isLoading=payload.isLoading
+     
+       state.isLoading=payload
      },
      [types.UPDATETYPE](state,type){
        state.type=type

@@ -2,7 +2,7 @@ import axios from 'axios'
 import {getStore,removeStore} from './util'
 import router from '../router/index'
 import {baseUrl} from './constants'
-
+import store from '../../src/store/index'
 axios.defaults.timeout=5000;
 axios.defaults.baseURL=baseUrl;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -10,13 +10,15 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 axios.interceptors.request.use(
     config => {
         console.log(`发起请求:path:${config.url},baseUrl:${config.baseURL}`)
-
+        // this.$vux.toast.text('hello', 'top')
         const token=JSON.parse(getStore('authToken'))
         if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token   
             const accessToken=token.accessToken;
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
+        store.commit('UPDATE_LOADING_STATUS',true) 
         return config;
+    
     },
     err => {
         return Promise.reject(err);
@@ -24,9 +26,16 @@ axios.interceptors.request.use(
 
   axios.interceptors.response.use( 
     response => {
+        setTimeout( () => {
+            store.commit('UPDATE_LOADING_STATUS',false) 
+        },100)
+    
       return response ;
     },
     error => {
+        setTimeout( () => {
+            store.commit('UPDATE_LOADING_STATUS',false) 
+        },100)
       if(error && error.response){
         
          switch(error.response.status){

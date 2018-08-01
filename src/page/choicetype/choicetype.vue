@@ -45,7 +45,6 @@ export default {
        },
      async getGameTwoFee(){
          let res= await getGameTwoFee()
-             debugger
          if(res && res.success){
             this.fee=res.result
          }else{

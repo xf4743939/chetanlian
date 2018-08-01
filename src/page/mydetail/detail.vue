@@ -1,6 +1,6 @@
 <template>
     <div class="detail_wrap ">  
-   <img class="top" v-if="false" src="../../../static/images/top.png" >
+       <img class="top" v-if="false" src="../../../static/images/top.png" >
         <div class="detail_bd">     
               <img src="../../../static/images/detail_bd.png" >
         </div>
@@ -11,7 +11,7 @@
             <div class="info_main">
                 <div class="info_item" @click="detailInfo(1)">
                     <p class="item_num" >
-                        <span>{{ userInfo.cMoney | toDemail }}</span>
+                        <span>{{ userInfo.cMoney.toFixed(2) }}</span>
                         <span>元</span>
                     </p>
                     <p class="item_name">
@@ -32,11 +32,11 @@
                  <div class="info_item" @click="detailInfo(3)">
                     <p class="item_num item_group">
                         <div>
-                              <span style="font-size:28rpx;font-weight:normal;margin-right:10rpx;">{{ userInfo.cReduction | convert }}</span>
+                              <span style="font-size:28rpx;font-weight:normal;margin-right:10rpx;">{{ userInfo.cReduction | convertVal }}</span>
                               <span style="color:#999;">碳</span>
                         </div>
                         <div>
-                          <span style="margin-right:10rpx;">{{ userInfo.cPollute | convert }}</span>
+                          <span style="margin-right:5px;">{{ userInfo.cPollute | convertVal  }}</span>
                           <span style="color:#999">污染物</span>
                         </div>                
                     </p>
@@ -98,25 +98,30 @@ export default {
         return{
            nextDay:0,
            wifiStatus:wifiStatus,
-           userInfo:null,
         }
     },
+    computed:{
+      ...mapState(['userInfo'])
+    },
     filters:{
-        toDemail(val){
-           return val.toFixed(2)
-        },
-        convert(val){
-            if(!val) return 0;
-             let arr=val.toFixed(2).split('.')
+      convertVal(item){
+          
+            if(parseInt(item)==0){
+                return '0g'
+            }else {   
+                let arr=item.toFixed(2).split('.')
                 let a=arr[0],b=arr[1];
                 let num
                 if(a && a.length>3 && a.length<7){
                     num=(a/1000).toFixed(2) + "kg"
                 }else if(a && a.length>=7){
-                 num=(a/1000).toFixed(2) + "t"
+                num=(a/1000).toFixed(2) + "t"
+                }else{
+                    num=a.toFixed(2) + 'g'
                 }
-                return val=num
+                return  num
         }
+      }
     },
     methods: {
           ...mapMutations(['SAVEUSERINFO']),
@@ -140,7 +145,6 @@ export default {
        async getCurrentLoginInfo(){
             let res=await getCurrentLoginInfo();
             if(res && res.success){
-                this.userInfo=res.result;
                 this.$store.commit('SAVEUSERINFO',res.result) 
             }else{
                 this.$vux.toast.text(res.error.message,'middle')
@@ -149,13 +153,19 @@ export default {
      
     },
     mounted () {
-       this.getCurrentLoginInfo()
+       if(!this.userInfo){
+           this.getCurrentLoginInfo()
+       }
     }
 }
 </script>
 <style lang="less" scoped>
     .detail_wrap{
-       
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 100%;   
         .top{
             position: fixed;
             top: 0;
@@ -243,18 +253,23 @@ export default {
             }         
         }
         .detail_banner{
-            position: relative;
-            top: -42px;
+             position: absolute;
+             bottom: 95px;
+             width: 100%;
+            a{
+                display:inline-flex;
+                width: 100%;
+            }
             img{
                 width: 100%;
-                height: 90px;
+                // height: 90px;
             }
         }
         .detail_footer{
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
+            right: 0;
             height: 85px;
             background: #fff;
             box-shadow: 0px 0px 32px 0px 
@@ -265,6 +280,7 @@ export default {
                margin-right: 15px;
            }
            .footer_container{
+            
                height: 100%;
                display: flex;
                display: -webkit-flex;

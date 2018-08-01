@@ -2,7 +2,6 @@
     <div class="page address page_Wrap">
         <div class="address_text">
             <x-textarea placeholder="设备邮寄地址" :max="50" :min="5" v-model="address"></x-textarea>
-            <!-- <textarea class="weui-textarea"  maxlength="50" minlength="5" v-model="address" placeholder="设备邮寄地址"></textarea> -->
         </div>
         <div class="btn_wrap">
              <button class="btn" @click="bind">下一步</button>

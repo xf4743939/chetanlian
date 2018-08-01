@@ -47,7 +47,6 @@ export default {
          let res = await getCurrentLoginInfo()
          if(res && res.success){
               let userInfo=res.result;
-  
                this.goToUrl(userInfo)
               this.$store.commit('SAVEUSERINFO',userInfo)
          }else {
@@ -65,6 +64,7 @@ export default {
      },
     async createWxMenu(){
        let res=await createWxMenu();
+      
        if(res && res.success){
           console.log(res.result)
        }else{
@@ -73,8 +73,7 @@ export default {
      }
   },
   mounted(){
-   
-   
+    
     let data={
       IsIos:this.isAndroid
     };
@@ -92,7 +91,7 @@ export default {
   
   /*视图动画*/
  
-  .slide-fade-enter-active {
+.slide-fade-enter-active {
   transition: all 1.2s ease;
 }
  .slide-fade-leave-active {

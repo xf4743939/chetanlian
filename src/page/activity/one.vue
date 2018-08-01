@@ -26,7 +26,7 @@ export default {
         }
     },
     computed: {
-      ...mapState(['isLogin','userInfo','type'])  
+      ...mapState(['isLogin','userInfo'])  
     },
     methods: {
        ...mapMutations(['UPDATETYPE']),
@@ -53,13 +53,14 @@ export default {
                      this.btnTxt='已参加活动二，不能再参加此活动'
                  }else if(this.userInfo && this.userInfo.gameListType==gameListType.one){
                       this.disabled=true
-                    this.btnTxt='已参加'
+                     this.btnTxt='已参加'
                  }
              }
         }
     },
     mounted () {   
-        this.getData()
+      
+         this.getData()
     }
 }
 </script>

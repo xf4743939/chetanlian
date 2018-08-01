@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../../src/store/index'
 Vue.use(Router)
 
 const login = r => require.ensure([],() => require('../page/login/login.vue'),'login')
@@ -28,6 +29,13 @@ const reduction = r => require.ensure([],() => require('../page//reduction/reduc
 
 const paymoney = r => require.ensure([],() => require('../page/paymoney/paymoney.vue'),'paymoney')
 
+const terms = r => require.ensure([],() => require('../page/terms/terms.vue'),'terms')
+
+const point = r => require.ensure([],() => require('../page/point/point.vue'),'point')
+
+const reward = r => require.ensure([],() => require('../page/reward/reward.vue'),'reward')
+
+const carbonReduction = r => require.ensure([],() => require('../page/carbonReduction/carbonReduction.vue'),'carbonReduction')
 
 const routes= [
   {
@@ -38,6 +46,42 @@ const routes= [
        title:'车碳宝',
        keepAlive:false
      } 
+  },
+  {
+    path:'/carbonReduction',
+    name:'carbonReduction',
+    component:carbonReduction,
+    meta:{
+      title:'减排达人',
+      keepAlive:false
+    }
+  },
+  {
+    path:'/terms',
+    name:'terms',
+    component:terms,
+    meta:{
+      title:'用户协议',
+      keepAlive:'false'
+    }
+  },
+  {
+    path:'/reward',
+    name:'reward',
+    component:reward,
+    meta:{
+      title:'获得奖励',
+      keepAlive:false
+    }
+  },
+  {
+     path:'/point',
+     name:'point',
+     component:point,
+     meta:{
+       title:'碳积分',
+       keepAlive:false
+     }
   },
   {
      path:'/paymoney',
@@ -170,5 +214,10 @@ router.beforeEach((to,form,next) =>{
   document.title=to.meta.title 
   next()
 })
+
+// router.afterEach((to) =>{
+//   store.commit('UPDATE_LOADING_STATUS',false)
+ 
+// })
 
 export default router

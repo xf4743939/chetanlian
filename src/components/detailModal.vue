@@ -62,17 +62,54 @@ export default {
             this.payMoney()
          }, 
         async payMoney(){
+            const that=this;
             let data=this.payInfo
             let res= await applyGameTwo(data)
+        
             if(res && res.success){
-                this.hideModal()
-                this.$router.push({path:'detail'})
-               
-            
+                let data=JSON.parse(res.result);
+                let appid=data.appid
+                let timestamp=''+ data.timestamp
+                let nonceStr=  data.noncestr
+                let packages='prepay_id='+ data.prepayid
+                let keys="gS8NoVGODkOCtuEisN8ZmN6qeSbSF4y9";
+                const str=`appid=${appid}&nonceStr=${nonceStr}&package=prepay_id=${data.prepay_id}&signType=MD5&timeStamp${timestamp}&key=${keys}`
+                let paysign=md5(str).toUpperCase()     
+                console.log(paysign)          
+                this.$wechat.chooseWXPay({
+                    'timeStamp':timestamp,
+                    'nonceStr': nonceStr,
+                    'package': packages,
+                    'signType': 'MD5',
+                    'paySign':paysign,
+                    'success':function(res){
+                       that.$vux.toast.text('支付成功')
+                       that.$vux.toast.show({
+                           text:'支付成功',
+                           onShow(){
+
+                           },
+                           onHide(){
+                               that.hideModal()
+                           }
+                       })
+                    
+                    },
+                    'fail':function(res){  
+                           that.$vux.toast.show({
+                           text:res.errMsg,
+                           onShow(){
+
+                           },
+                           onHide(){
+                               that.hideModal()
+                           }
+                       })                  
+                     },        
+                    })     
             }else{
                 this.hideModal()
                 this.$vux.toast.text(res.error.message,'middle')
-           
             }
         }   
     },
@@ -99,10 +136,10 @@ export default {
       overflow: hidden;
       position: fixed;
       top:50%;
-      left:0;
+      left:50%;
       z-index: 9999;
       background: #f9f9f9;
-      margin: -210px 35px;
+      margin: -210px -150px;
       border-radius: 9px;
   }
   .modal-title{
