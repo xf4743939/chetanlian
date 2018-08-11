@@ -1,6 +1,9 @@
 //地址
 export const baseUrl="https://www.chetanlian.com";
 
+//公众号的appId
+export const appId='wx98b83e8f8b25062e'
+
 export const gameListType={
     no:0, //没有活动
     one:1, //活动一

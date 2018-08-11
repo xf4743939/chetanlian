@@ -4,7 +4,7 @@
        <mileage-modal v-if="isShow" :isShow="isShow"  v-on:hideModal="hideModal" :mileages="modalVal"></mileage-modal>
       <div class="odometer_head">
           <div style="width:85px;">输入里程表</div>
-          <div style="width:150px;"><input type="number"  max="999999" min="0" maxlength="6" placeholder="输入里程表数值" v-model="number"></div>
+          <div style="width:150px;"><input type="number" :maxlength="6" placeholder="输入里程表数值" oninput="if(value.length>6)value=value.slice(0,6)" v-model="number"></div>
           <div style="width:50ox;">公里</div>         
       </div>
        <div v-if="imgUrl.length>0" class="odometr_img">
@@ -44,10 +44,11 @@ import {enums} from '../../libs/constants'
 import mileageModal from '../../components/mileageModal'
 import{mapState} from 'vuex'
 import {getStore} from '../../libs/util'
+import axios from 'axios'
 export default {
     data(){
         return {
-            isShow:false,
+           isShow:false,
            imgUrl:'', //拍照的图片路径
            number:'',//里程数
            page:1,//第一页
@@ -55,7 +56,8 @@ export default {
            mileagesObj:null,
            mileages:[], //历史里程
            baseUrl:baseUrl,//网站地址
-           modalVal:null //传给modal 
+           modalVal:null, //传给modal 
+           nextLoadPicDay:0,//下次上传的天使
         }
     },
     components: {
@@ -72,19 +74,11 @@ export default {
             this.modalVal=this.mileages[0];
            this.isShow=true;
         },
-        async nextLoadPicDay(){
-            let res=await nextLoadPicDay()
-            if(res && res.success){
-                
-            }else{
-                this.$vux.toast.text(res.error.message,'middle')
-               
-            }
-        },
+      
         //调取摄像头拍照
         authorize(){
             const that=this
-           if(this.userInfo && this.userInfo.nextPicDay>0){
+          if(this.nextLoadPicDay && this.nextLoadPicDay>0){
                return;
            } 
            this.$wechat.chooseImage({
@@ -126,13 +120,15 @@ export default {
                              
                                 that.createMileage(imgUrl[0])    
                        }catch(e){
-                           console.log(e)
+                            that.$vux.toast.text('上传失败','middle')  
+                            that.imgUrl=''     
                        }
                     
                  
                 },
                 fail: function (e) {    
-                   that.$vux.toast.text('上传失败','middle')       
+                   that.$vux.toast.text('上传失败','middle')   
+                   that.imgUrl='';    
                 }
            })  
         },
@@ -149,27 +145,26 @@ export default {
                this.imgUrl='';
                this.number='';
                this.$vux.toast.text('上传成功','middle')
-             
-               this.getMileageListByFilter()
+               this.initData()
            }else{
-               this.$vux.toast.text(res.error.message,'middle')
+               this.imgUrl=''
+               this.$vux.toast.text('上传失败','middle')
              
            }
         },
-       async getMileageListByFilter(){
-           let data={
+       initData(){
+            const that=this;
+              let data={
                page:this.page,
                rows:this.num
-           } 
-           let res= await getMileageListByFilter(data);
-       
-           if(res && res.success){
-               this.mileagesObj=res.result
-               this.mileages=res.result.items;     
-           }else{
-               this.$vux.toast.text(res.error.message,'middle')
-              
-           }
+             }
+             axios.all([nextLoadPicDay(),getMileageListByFilter(data)])
+                .then(axios.spread(function(a,b){
+                  
+                    that.mileagesObj=b.result;
+                    that.mileages=b.result.items;
+                    that.nextLoadPicDay=a.result;
+                }))
        },
         cancel(){
             this.imgUrl='';
@@ -179,9 +174,8 @@ export default {
            this.upload()  
         }
     },
-    mounted () {
-     
-        this.getMileageListByFilter();
+    mounted () {    
+       this.initData()
     }
 }
 </script>
@@ -195,6 +189,11 @@ export default {
         box-sizing:border-box;
        padding-left: 0;
        padding-right: 0;
+       input[type="number"]{
+           width: 100%;
+           outline: 0;
+           border: 0;
+       }
       .odometerList{
         padding-left: 20px;
         padding-right: 20px;
@@ -213,6 +212,7 @@ export default {
         .odemeter_img{
             img{
                 width: 100%;
+                max-height: 250px;
             }
         }
       }
@@ -274,4 +274,7 @@ export default {
           } 
       }
   }
+@media screen and (max-width: 321px) {
+     
+}
 </style>

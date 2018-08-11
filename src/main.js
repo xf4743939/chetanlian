@@ -28,7 +28,7 @@ new Vue({
   components: { App },
   template: '<App/>',
   mounted(){
-    console.log(Vue.wechat) 
+    // console.log(Vue.wechat) 
     this.$store.commit(types.UPDATE_DEVICE,{isAndroid:Vue.device.isAndroid})
   }
 })

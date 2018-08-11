@@ -39,7 +39,9 @@
 </template>
 <script>
 import { applyGameTwo } from '../libs/api'
+import { appId} from '../libs/constants'
 
+const md5=require('md5')
 export default {
     data(){
         return{
@@ -65,15 +67,15 @@ export default {
             const that=this;
             let data=this.payInfo
             let res= await applyGameTwo(data)
-        
+         console.log(res)
             if(res && res.success){
                 let data=JSON.parse(res.result);
-                let appid=data.appid
+                let appid=appId
                 let timestamp=''+ data.timestamp
                 let nonceStr=  data.noncestr
                 let packages='prepay_id='+ data.prepayid
                 let keys="gS8NoVGODkOCtuEisN8ZmN6qeSbSF4y9";
-                const str=`appid=${appid}&nonceStr=${nonceStr}&package=prepay_id=${data.prepay_id}&signType=MD5&timeStamp${timestamp}&key=${keys}`
+                const str=`appId=${appid}&nonceStr=${nonceStr}&package=prepay_id=${data.prepay_id}&signType=MD5&timeStamp=${timestamp}&key=${keys}`
                 let paysign=md5(str).toUpperCase()     
                 console.log(paysign)          
                 this.$wechat.chooseWXPay({
@@ -96,6 +98,7 @@ export default {
                     
                     },
                     'fail':function(res){  
+                        console.log(res,'fail')
                            that.$vux.toast.show({
                            text:res.errMsg,
                            onShow(){

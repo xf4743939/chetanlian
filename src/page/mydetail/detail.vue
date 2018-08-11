@@ -1,5 +1,5 @@
 <template>
-    <div class="detail_wrap ">  
+    <div class="detail_wrap " v-if="userInfo">  
        <img class="top" v-if="false" src="../../../static/images/top.png" >
         <div class="detail_bd">     
               <img src="../../../static/images/detail_bd.png" >
@@ -153,6 +153,7 @@ export default {
      
     },
     mounted () {
+        
        if(!this.userInfo){
            this.getCurrentLoginInfo()
        }
@@ -210,9 +211,9 @@ export default {
             background: #fff;
             border-radius: 8px;
             box-shadow:0px 0px 0px 0 #fff,
-            -2px 0px 3px 0px #efefef,
-            2px 0px 3px 0px #efefef,
-            0px 3px 3px 0px #efefef;
+            -2px 0px 0px 0px #efefef,
+            2px 0px 0px 0px #efefef,
+            0px 3px 0px 0px #efefef;
             .info_item{
                  flex: 1;
                  text-align:center;      
